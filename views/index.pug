@@ -1,0 +1,18 @@
+extends layout
+
+block content
+  h1= title
+  p Welcome to the Halloween Special 
+  div Boosted Render by Gokul Aadarsh Yalagandula
+  button(type="button", class="btn btn-secondary", onclick="boost()") Sample Button
+  div(id="boost") add in extra
+  a(href="/books") View Book Results
+  script.
+    let value = 0;
+    let amt = 3;
+
+    function boost() {
+      amt += 1;
+      value += amt;
+      document.getElementById("boost").innerText = `Boosted ${value} by ${amt}`;
+    }

@@ -1,0 +1,28 @@
+extends layout
+
+block content
+  h1 #{title}
+
+  // Convert rows and cols from query to numbers
+  - let rows = Number(query.rows)
+  - let cols = Number(query.cols)
+
+  // Check if rows and cols are provided in the query
+  - if (query.rows && query.cols)
+    p Rows: #{query.rows}, Columns: #{query.cols}
+
+    - if (!Number.isInteger(rows) || !Number.isInteger(cols))
+      p Error: Rows and columns must be integers.
+    - else if (rows < 3 || rows > 13)
+      p Error: Rows must be between 3 and 13.
+    - else if (cols < 3 || cols > 13)
+      p Error: Columns must be between 3 and 13.
+    - else
+      table#outer
+        - for (let i = 0; i < rows; i++)
+          tr#middle
+            - for (let j = 0; j < cols; j++)
+              td= (i * i + j)
+  - else
+    p Please provide rows and cols in the query parameters.
+

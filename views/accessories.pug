@@ -1,0 +1,25 @@
+extends layout
+block content
+  head
+    title accessories List
+    link(rel="stylesheet", href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css")
+  body
+    .container
+      h1 accessories List
+      table.table
+        thead
+          tr
+            th ID
+            th Name
+            th Brand
+        tbody
+          each accessory in accessories
+            tr
+              td= accessory.id
+              td= accessory.name
+              td= accessory.brand
+
+      script.
+        function buy(index) {
+          alert(`You purchased item ${index + 1}`);
+        }

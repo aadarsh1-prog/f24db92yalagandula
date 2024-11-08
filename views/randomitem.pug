@@ -1,0 +1,9 @@
+extends layout
+
+block content
+  h1 Random images of Characters display 
+  .container
+    each _, index in [1, 2, 3]
+      - let r = Math.floor(Math.random() * image_names.length)
+      img(src=`/images/${image_names[r]}`, alt=`Item ${r}`, height="300", width="300")
+  
