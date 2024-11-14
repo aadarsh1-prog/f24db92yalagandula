@@ -1,0 +1,13 @@
+// views/costumes.pug
+doctype html
+html
+  head
+    title Costumes
+  body
+    h1 Available Costumes
+    ul
+      each costume in costumes
+        li
+          p Type: #{costume.costume_type}
+          p Size: #{costume.size}
+          p Cost: $#{costume.cost}
