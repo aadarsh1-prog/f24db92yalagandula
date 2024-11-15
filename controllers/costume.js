@@ -1,12 +1,20 @@
 var Costume = require('../models/costume');
 // List of all Costumes
+const mongoose = require('mongoose');
 exports.costume_list = function(req, res) {
 res.send('NOT IMPLEMENTED: Costume list');
 };
 // for a specific Costume.
-exports.costume_detail = function(req, res) {
-res.send('NOT IMPLEMENTED: Costume detail: ' + req.params.id);
-};
+exports.costume_detail = async function(req, res) {
+    console.log("detail" + req.params.id)
+    try {
+    result = await Costume.findById( req.params.id)
+    res.send(result)
+    } catch (error) {
+    res.status(500)
+    res.send(`{"error": document for id ${req.params.id} not found`);
+    }
+};    
 // Handle Costume create on POST.
 exports.costume_create_post = function(req, res) {
 res.send('NOT IMPLEMENTED: Costume create POST');
@@ -15,9 +23,27 @@ res.send('NOT IMPLEMENTED: Costume create POST');
 exports.costume_delete = function(req, res) {
 res.send('NOT IMPLEMENTED: Costume delete DELETE ' + req.params.id);
 };
-// Handle Costume update form on PUT.
-exports.costume_update_put = function(req, res) {
-res.send('NOT IMPLEMENTED: Costume update PUT' + req.params.id);
+// Handle Costume update form on PUT
+exports.costume_update = async function(req, res) {
+    console.log("Received request to update costume ID:", req.params.id); // Debug log
+    try {
+        // Convert ID to ObjectId to ensure compatibility with MongoDB
+        const id = mongoose.Types.ObjectId(req.params.id);
+        
+        // Update the costume using the ID and the data in req.body
+        const updatedCostume = await Costume.findByIdAndUpdate(id, req.body, { new: true });
+        
+        if (updatedCostume) {
+            console.log("Updated costume:", updatedCostume); // Debug log for updated costume
+            res.send(updatedCostume); // Send the updated document back as response
+        } else {
+            console.log("Costume not found for update"); // Debug log if no document found for update
+            res.status(404).send({ error: `Costume with id ${req.params.id} not found` });
+        }
+    } catch (error) {
+        console.error("Error updating costume:", error); // Debug log for error
+        res.status(500).send({ error: `Error updating costume: ${error.message}` });
+    }
 };
 exports.costume_list = async function(req, res) {
     try{
