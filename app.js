@@ -86,6 +86,17 @@ app.get('/update',async function(req, res) {
     res.status(500).send(`{'error': '${err}'}`);
   }
 });
+app.get('/delete',  async function(req, res) {
+  console.log("Delete view for id " + req.query.id)
+  try{
+  result = await Costume.findById(req.query.id)
+  res.render('costumedelete', { title: 'Costume Delete', toShow:result });
+  }
+  catch(err){
+  res.status(500)
+  res.send(`{'error': '${err}'}`);
+  }
+  });
 // Example route for books
 app.get('/books', (req, res) => {
   const books = [

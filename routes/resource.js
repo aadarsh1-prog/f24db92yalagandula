@@ -47,6 +47,18 @@ router.get('/update/:id', async function(req, res) {
   res.send(`{'error': '${err}'}`);
   }
   });
+  router.get('/delete',  async function(req, res) {
+    console.log("Delete view for id " + req.query.id)
+    try{
+    result = await Costume.findById(req.query.id)
+    res.render('costumedelete', { title: 'Costume Delete', toShow:
+    result });
+    }
+    catch(err){
+    res.status(500)
+    res.send(`{'error': '${err}'}`);
+    }
+    });
 router.delete('/costumes/:id', async function(req, res) {
   console.log("delete " + req.params.id)
   try {
