@@ -49,11 +49,10 @@ app.set('view engine', 'pug');
 
 // Middleware setup
 app.use(logger('dev'));
-app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
-
+app.use(express.urlencoded({ extended: true })); // To parse form data
+app.use(express.json()); 
 // Routes
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
@@ -69,16 +68,9 @@ app.get('/costumes', async (req, res, next) => {
     next(error); // Pass errors to the error handler
   }
 });
-app.get('/create',function(req, res) {
-  console.log("create view")
-  try{
-  res.render('costumecreate', { title: 'Costume Create'});
-  }
-  catch(err){
-  res.status(500)
-  res.send(`{'error': '${err}'}`);
-  }
-  }); 
+app.get('/create', (req, res) => {
+  res.render('costumecreate', { title: 'Create Costume' });
+});
 // Example route for books
 app.get('/books', (req, res) => {
   const books = [
@@ -100,7 +92,26 @@ app.get('/selector', (req, res) => {
   const imageNames = ['1.jpeg', '2.jpg', '3.jpeg', '4.jpeg', '5.jpeg'];
   res.render('randomitem', { imageNames });
 });
+app.post('/resource/costumes', (req, res) => {
+  const { costume_type, size, cost } = req.body;
 
+  // Create a new Costume object
+  const newCostume = new Costume({
+    costume_type,
+    size,
+    cost
+  });
+
+  // Save the new costume to the database
+  newCostume.save()
+    .then(() => {
+      res.json({ message: 'Costume created successfully!' }); // Return success message as JSON
+    })
+    .catch((error) => {
+      console.error('Error creating costume:', error);
+      res.status(500).json({ error: 'Failed to create costume' }); // Return error message as JSON
+    });
+});
 
 // Error handler
 app.use((err, req, res, next) => {

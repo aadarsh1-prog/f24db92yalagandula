@@ -81,7 +81,7 @@ exports.costume_list = async function(req, res) {
         res.render('costumecreate', { title: 'Costume Create'});
         }
         catch(err){
-        res.status(500)
+        res.status(500) 
         res.send(`{'error': '${err}'}`);
         }
         };        

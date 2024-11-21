@@ -7,6 +7,16 @@ var mongoose = require('mongoose');
 /// API ROUTE ///
 // GET resources base.
 router.get('/', api_controller.api);
+router.get('/create', function(req, res) {
+  console.log("create view")
+  try{
+    res.render('costumecreate', { title: 'Costume Create'});
+  }
+  catch(err){
+    res.status(500)
+    res.send(`{'error': '${err}'}`);
+  }
+});
 router.put('/costumes/:id', async (req, res) => {
   console.log("Received request to update costume ID:", req.params.id); // Debug log
   try {
@@ -49,32 +59,6 @@ router.get('/detail', async function(req, res) {
   res.send(`{'error': '${err}'}`);
   }
   });
-/*router.get('/create', function(req, res) {
-  console.log("create view")
-  try{
-  res.render('costumecreate', { title: 'Costume Create'});
-  }
-  catch(err){
-  res.status(500)
-  res.send(`{'error': '${err}'}`);
-  }
-  });**/
-router.get('/costumes/:id',async (req, res) => {
-  console.log("Received request for costume ID:", req.params.id); // Debug log
-  try {
-      const result = await Costume.findById(req.params.id);
-      if (result) {
-          console.log("Found costume:", result); // Debug log for result
-          res.send(result);
-      } else {
-          console.log("Costume not found"); // Debug log if no result
-          res.status(404).send({ error: `Costume with id ${req.params.id} not found` });
-      }
-  } catch (error) {
-      console.error("Error retrieving costume:", error); // Debug log for error
-      res.status(500).send({ error: `Error retrieving costume: ${error.message}` });
-  }
-});
 // Route to fetch and display costumes
 router.get("/items", async (req, res, next) => {
   try {
@@ -101,12 +85,28 @@ router.post('/costumes', async (req, res) => {
     const savedCostume = await newCostume.save();
 
     // Render a confirmation page with the saved costume details
-    res.render('x', {
+    res.json({
       message: "Costume created successfully",
       costume: savedCostume
     });
   } catch (err) {
     res.status(500).send("Error creating costume: " + err);
+  }
+});
+router.get('/costumes/:id',async (req, res) => {
+  console.log("Received request for costume ID:", req.params.id); // Debug log
+  try {
+      const result = await Costume.findById(req.params.id);
+      if (result) {
+          console.log("Found costume:", result); // Debug log for result
+          res.send(result);
+      } else {
+          console.log("Costume not found"); // Debug log if no result
+          res.status(404).send({ error: `Costume with id ${req.params.id} not found` });
+      }
+  } catch (error) {
+      console.error("Error retrieving costume:", error); // Debug log for error
+      res.status(500).send({ error: `Error retrieving costume: ${error.message}` });
   }
 });
 
