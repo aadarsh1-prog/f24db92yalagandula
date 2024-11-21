@@ -71,6 +71,21 @@ app.get('/costumes', async (req, res, next) => {
 app.get('/create', (req, res) => {
   res.render('costumecreate', { title: 'Create Costume' });
 });
+app.get('/update',async function(req, res) {
+  console.log("update view for item " + req.query.id);
+  try {
+    let result = await Costume.findById(req.query.id);
+    
+    if (!result) {
+      // If no costume is found, show an error or redirect
+      return res.status(404).send('Costume not found');
+    }
+    
+    res.render('costumeupdate', { title: 'Costume Update', toShow: result });
+  } catch (err) {
+    res.status(500).send(`{'error': '${err}'}`);
+  }
+});
 // Example route for books
 app.get('/books', (req, res) => {
   const books = [
@@ -112,7 +127,25 @@ app.post('/resource/costumes', (req, res) => {
       res.status(500).json({ error: 'Failed to create costume' }); // Return error message as JSON
     });
 });
-
+app.put('/costumes/:id', async (req, res) => {
+  console.log("Received request to update costume ID:", req.params.id); // Debug log
+  try {
+      // Correct way to create ObjectId
+      const id = new mongoose.Types.ObjectId(req.params.id);
+      // Update the costume using the ID and the data in req.body
+      const updatedCostume = await Costume.findByIdAndUpdate(id, req.body, { new: true });
+      if (updatedCostume) {
+          console.log("Updated costume:", updatedCostume); // Debug log for updated costume
+          res.send(updatedCostume); // Send the updated document back as response
+      } else {
+          console.log("Costume not found for update"); // Debug log if no document found for update
+          res.status(404).send({ error: `Costume with id ${req.params.id} not found` });
+      }
+  } catch (error) {
+      console.error("Error updating costume:", error); // Debug log for error
+      res.status(500).send({ error: `Error : ${error.message}` });
+  }
+});
 // Error handler
 app.use((err, req, res, next) => {
   console.error(err.stack);

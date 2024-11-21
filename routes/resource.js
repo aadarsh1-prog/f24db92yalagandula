@@ -36,6 +36,17 @@ router.put('/costumes/:id', async (req, res) => {
       res.status(500).send({ error: `Error : ${error.message}` });
   }
 });
+router.get('/update/:id', async function(req, res) {
+  console.log("update view for item "+req.query.id)
+  try{
+  let result = await Costume.findById(req.query.id)
+  res.render('costumeupdate', { title: 'Costume Update', toShow: result });
+  }
+  catch(err){
+  res.status(500)
+  res.send(`{'error': '${err}'}`);
+  }
+  });
 router.delete('/costumes/:id', async function(req, res) {
   console.log("delete " + req.params.id)
   try {

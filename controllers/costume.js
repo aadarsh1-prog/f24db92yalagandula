@@ -14,7 +14,18 @@ exports.costume_detail = async function(req, res) {
     res.status(500)
     res.send(`{"error": document for id ${req.params.id} not found`);
     }
-};    
+};  
+exports.costume_update_Page = async function(req, res) {
+    console.log("update view for item "+req.query.id)
+    try{
+    let result = await Costume.findById(req.query.id)
+    res.render('costumeupdate', { title: 'Costume Update', toShow: result });
+    }
+    catch(err){
+    res.status(500)
+    res.send(`{'error': '${err}'}`);
+    }
+    };  
 // Handle Costume create on POST.
 exports.costume_create_post = function(req, res) {
 res.send('NOT IMPLEMENTED: Costume create POST');

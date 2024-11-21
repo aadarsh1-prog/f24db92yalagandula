@@ -1,0 +1,57 @@
+extends layout
+
+block content
+  h1= title
+  - let costumesize = toShow.size
+  - let costumeid = toShow._id
+  - let costume_type = toShow.costume_type
+  - let costumecost = toShow.cost
+
+  div.row(class='mb-2')
+    div.mr-1 ID is
+    div #{costumeid}
+
+  - let actionid = "/resource/costumes/" + costumeid
+  form(id='CostumeForm', action= actionid, method="PUT")
+    div.form-group
+      label.costumeAttr(for='costume_type') Costume type
+      input#costume_type(type='text', name='costume_type', value= costume_type)
+    
+    div.form-group
+      label.costumeAttr(for='size') Costume size
+      input#size(type='text', name='size', value= costumesize)
+    
+    div.form-group
+      label.costumeAttr(for='cost') Costume cost
+      input#cost(type='number', name='cost', value= costumecost)
+
+    input(type="submit")
+
+  script.
+    document.forms['CostumeForm'].addEventListener('submit', (event) => {
+      event.preventDefault();
+
+      // Show user that form is being submitted (optional)
+      fetch(event.target.action, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded', // Ensure content type is correct
+        },
+        body: new URLSearchParams(new FormData(event.target)) // Collect form data
+      })
+      .then((resp) => {
+        if (!resp.ok) { // Check if response is successful
+          throw new Error('Update failed with status: ' + resp.status);
+        }
+        return resp.json(); // Parse JSON response from the server
+      })
+      .then((body) => {
+        alert("Update succeeded");
+        console.log(body); // Log the response (optional for debugging)
+        // Optional: You can update the page or redirect the user as needed
+        // Example: window.location.href = '/somepage'; // Redirect
+      })
+      .catch((error) => {
+        alert("Update failed: " + error);
+      });
+    });
