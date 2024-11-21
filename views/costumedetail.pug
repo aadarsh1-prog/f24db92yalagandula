@@ -1,0 +1,21 @@
+extends layout
+
+block content
+  h1= title
+  - let costumeid = toShow._id
+  - let costume_type = toShow.costume_type
+  - let costumecost = toShow.cost
+  - let costumesize = toShow.size
+  div
+    div.row
+      div(class='costumeAttr mr-3') Costume ID is:
+      div #{costumeid}
+    div.row
+      div(class='costumeAttr mr-3') Costume Type is:
+      div #{costume_type}
+    div.row
+      div(class='costumeAttr mr-3') Costume Size is:
+      div #{costumesize}
+    div.row
+      div(class='costumeAttr mr-3') Costume Cost is:
+      div #{costumecost}

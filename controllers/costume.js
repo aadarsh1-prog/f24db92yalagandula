@@ -20,9 +20,17 @@ exports.costume_create_post = function(req, res) {
 res.send('NOT IMPLEMENTED: Costume create POST');
 };
 // Handle Costume delete from on DELETE.
-exports.costume_delete = function(req, res) {
-res.send('NOT IMPLEMENTED: Costume delete DELETE ' + req.params.id);
-};
+exports.costume_delete = async function(req, res) {
+    console.log("delete " + req.params.id)
+    try {
+    result = await Costume.findByIdAndDelete( req.params.id)
+    console.log("Removed " + result)
+    res.send(result)
+    } catch (err) {
+    res.status(500)
+    res.send(`{"error": Error deleting ${err}}`);
+    }
+    };    
 // Handle Costume update form on PUT
 exports.costume_update = async function(req, res) {
     console.log("Received request to update costume ID:", req.params.id); // Debug log
@@ -67,5 +75,26 @@ exports.costume_list = async function(req, res) {
             res.status(500).json({ message: error.message });
         }
     }
-    
+    exports.costume_create_Page = function(req, res) {
+        console.log("create view")
+        try{
+        res.render('costumecreate', { title: 'Costume Create'});
+        }
+        catch(err){
+        res.status(500)
+        res.send(`{'error': '${err}'}`);
+        }
+        };        
+    exports.costume_view_one_Page = async function(req, res) {
+        console.log("single view for id " + req.query.id)
+        try{
+        result = await Costume.findById( req.query.id)
+        res.render('costumedetail',
+        { title: 'Costume Detail', toShow: result });
+        }
+        catch(err){
+        res.status(500)
+        res.send(`{'error': '${err}'}`);
+        }
+        };
     module.exports = { listAllCostumes }    

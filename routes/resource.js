@@ -1,7 +1,7 @@
 var express = require('express');
 var router = express.Router();
 var api_controller = require('../controllers/api');
-var costume_controller = require('../controllers/costume');
+var costumeController = require('../controllers/costume');
 const Costume = require('../models/costume');  // Import the Costume model
 var mongoose = require('mongoose'); 
 /// API ROUTE ///
@@ -26,6 +26,39 @@ router.put('/costumes/:id', async (req, res) => {
       res.status(500).send({ error: `Error : ${error.message}` });
   }
 });
+router.delete('/costumes/:id', async function(req, res) {
+  console.log("delete " + req.params.id)
+  try {
+  result = await Costume.findByIdAndDelete( req.params.id)
+  console.log("Removed " + result)
+  res.send(result)
+  } catch (err) {
+  res.status(500)
+  res.send(`{"error": Error deleting ${err}}`);
+  }
+  });
+router.get('/detail', async function(req, res) {
+  console.log("single view for id " + req.query.id)
+  try{
+  result = await Costume.findById( req.query.id)
+  res.render('costumedetail',
+  { title: 'Costume Detail', toShow: result });
+  }
+  catch(err){
+  res.status(500)
+  res.send(`{'error': '${err}'}`);
+  }
+  });
+/*router.get('/create', function(req, res) {
+  console.log("create view")
+  try{
+  res.render('costumecreate', { title: 'Costume Create'});
+  }
+  catch(err){
+  res.status(500)
+  res.send(`{'error': '${err}'}`);
+  }
+  });**/
 router.get('/costumes/:id',async (req, res) => {
   console.log("Received request for costume ID:", req.params.id); // Debug log
   try {
@@ -43,22 +76,13 @@ router.get('/costumes/:id',async (req, res) => {
   }
 });
 // Route to fetch and display costumes
-router.get("/items", async function(req, res) {
-    try {
-        const costumes = await Costume.find();  // Fetch all costumes from DB
-        
-        // Create a string to display in the browser
-        let costumeText = "";
-        costumes.forEach(costume => {
-            costumeText += `Costume Type: ${costume.costume_type}, Size: ${costume.size}, Cost: $${costume.cost}\n`;
-        });
-
-        // Send plain text response
-        res.type('text/plain');  // Set the response type to plain text
-        res.send(costumeText); // Send the list of costumes as a response
-    } catch (err) {
-        res.status(500).send("Error retrieving costumes: " + err);
-    }
+router.get("/items", async (req, res, next) => {
+  try {
+    const costumes = await Costume.find(); // Fetch all costumes from the database
+    res.render('costumes', { title: 'Costumes List', costumes: costumes }); // Render the Pug template
+  } catch (err) {
+    next(err); // Handle errors
+  }
 });
 // POST route to create a new costume
 // POST to create a new costume
