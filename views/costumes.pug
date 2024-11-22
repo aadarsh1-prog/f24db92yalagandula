@@ -1,13 +1,77 @@
-// views/costumes.pug
 doctype html
 html
   head
     title Costumes
+    link(rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css")
+    style.
+      body {
+        background-color: #f8f9fa;
+        font-family: 'Arial', sans-serif;
+        padding: 20px;
+      }
+      .container {
+        max-width: 900px;
+        margin: auto;
+      }
+      .header {
+        text-align: center;
+        margin-bottom: 30px;
+      }
+      .header h1 {
+        font-size: 2rem;
+        color: #495057;
+        margin-bottom: 10px;
+      }
+      .header p {
+        font-size: 1rem;
+        color: #6c757d;
+      }
+      .costume-card {
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        padding: 20px;
+        background-color: #fff;
+        margin-bottom: 20px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      }
+      .costume-card h5 {
+        font-size: 1.25rem;
+        color: #007bff;
+        margin-bottom: 10px;
+      }
+      .costume-card p {
+        margin-bottom: 10px;
+        color: #495057;
+      }
+      .btn-update {
+        background-color: #007bff;
+        color: #fff;
+        border: none;
+        padding: 8px 16px;
+        border-radius: 5px;
+        font-size: 1rem;
+        width: 100%;
+      }
+      .btn-update:hover {
+        background-color: #0056b3;
+      }
+
   body
-    h1 Costumes list
-    ul
+    div.container
+      div.header
+        h1 Costumes Collection
+        p Browse through our latest costume collection!
+
       each costume in costumes
-        li
-          p Type: #{costume.costume_type}
+        div.costume-card
+          h5 #{costume.costume_type}
           p Size: #{costume.size}
           p Cost: $#{costume.cost}
+          button.btn-update(
+            onclick=`dispatch('/update?id=${costume._id}')`
+          ) Update
+
+    script.
+      function dispatch(path) {
+        window.location.href = path;
+      }
