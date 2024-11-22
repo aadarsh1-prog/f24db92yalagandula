@@ -1,46 +1,51 @@
 extends layout
 
 block content
-  h1= title
-  form(id='CostumeForm', action='resource/costumes', method='POST')
-    div.form-group
-      label(for='costume_type') Costume type
-      input#costume_type(type='text', name='costume_type')
-    div.form-group
-      label(for='size') Costume size
-      input#size(type='text', name='size')
-    div.form-group
-      label(for='cost') Costume cost
-      input#cost(type='number', name='cost')
-    input(type='submit')
+  h1.text-center.mt-4.mb-3 Create a New Costume
+  
+  div.container
+    div.card.shadow-lg
+      div.card-header.bg-primary.text-white.text-center
+        h5.card-title Create Costume Form
+      div.card-body
+        form(id='CostumeForm', action='/resource/costumes', method='POST')
+          div.form-group
+            label(for='costume_type') Enter Costume Type
+            input#costume_type.form-control(type='text', name='costume_type', required=true, placeholder="E.g., Superhero")
+          
+          div.form-group
+            label(for='size') Enter Costume Size
+            input#size.form-control(type='text', name='size', required=true, placeholder="E.g., Medium")
+          
+          div.form-group
+            label(for='cost') Enter Costume Cost
+            input#cost.form-control(type='number', name='cost', required=true, placeholder="E.g., 50")
+          
+          button.btn.btn-success.btn-block(type='submit') Add Costume
+          small.form-text.text-muted.text-center.mt-3 Please fill all fields before submitting.
 
   script.
     document.forms['CostumeForm'].addEventListener('submit', (event) => {
       event.preventDefault();
-      // Show user that form is being submitted (optional)
-      
-      // Use fetch to send form data
+
       fetch(event.target.action, {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/x-www-form-urlencoded',  // Ensure correct content type
+          'Content-Type': 'application/x-www-form-urlencoded',
         },
-        body: new URLSearchParams(new FormData(event.target)) // Form data as URLSearchParams
+        body: new URLSearchParams(new FormData(event.target))
       })
       .then((resp) => {
-        if (!resp.ok) {  // Check if the response is not successful (status not 2xx)
-          throw new Error(`HTTP error! Status: ${resp.status}`);
+        if (!resp.ok) {
+          throw new Error('Save failed with status: ' + resp.status);
         }
-        return resp.json();  // Parse JSON if response is OK
+        return resp.json();
       })
       .then((body) => {
-        alert("Save succeeded");
-        console.log("Response body:", body);
-        // Optionally, update the UI or handle the response body as needed
+        alert("Costume successfully created!");
+        window.location.href = '/resource/costumes';
       })
       .catch((error) => {
-        console.error("Error:", error);  // Log the error for debugging
-        alert("Save failed: " + error.message);
-        // Optionally, show an error message on the page
+        alert("Error while creating costume: " + error.message);
       });
     });
