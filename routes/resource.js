@@ -4,6 +4,7 @@ var api_controller = require('../controllers/api');
 var costumeController = require('../controllers/costume');
 const Costume = require('../models/costume');  // Import the Costume model
 var mongoose = require('mongoose'); 
+var passport = require('passport');
 /// API ROUTE ///
 // GET resources base.
 router.get('/', api_controller.api);
@@ -17,6 +18,7 @@ router.get('/create', function(req, res) {
     res.send(`{'error': '${err}'}`);
   }
 });
+
 router.put('/costumes/:id', async (req, res) => {
   console.log("Received request to update costume ID:", req.params.id); // Debug log
   try {
@@ -91,6 +93,26 @@ router.get("/items", async (req, res, next) => {
     next(err); // Handle errors
   }
 });
+router.get('/login', function(req, res) {
+  res.render('login', { title: 'Costume App Login', user : req.user });
+  });
+  router.post('/login', passport.authenticate('local'), function(req, res) {
+  res.redirect('/');
+  });
+  router.get('/logout', function(req, res) {
+  req.logout(function(err) {
+  if (err) { return next(err); }
+  res.redirect('/');
+  });
+  });
+  router.get('/ping', function(req, res){
+  res.status(200).send("pong!");
+  });
+  module.exports = router;
+  router.get('/ping', function(req, res){
+  res.status(200).send("pong!");
+  });
+  module.exports = router;
 // POST route to create a new costume
 // POST to create a new costume
 router.post('/costumes', async (req, res) => {

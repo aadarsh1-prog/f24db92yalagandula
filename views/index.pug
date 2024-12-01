@@ -1,18 +1,19 @@
 extends layout
 
 block content
-  h1= title
-  p Welcome to the Halloween Special 
-  div Boosted Render by Gokul Aadarsh Yalagandula
-  button(type="button", class="btn btn-secondary", onclick="boost()") Sample Button
-  div(id="boost") add in extra
-  a(href="/books") View Book Results
-  script.
-    let value = 0;
-    let amt = 3;
-
-    function boost() {
-      amt += 1;
-      value += amt;
-      document.getElementById("boost").innerText = `Boosted ${value} by ${amt}`;
-    }
+  .container.mt-5
+    .row.justify-content-center
+      .col-md-6.text-center
+        if (!user)
+          .card.shadow.mb-3
+            .card-body
+              h2 Welcome to Costumes App!
+              a.btn.btn-primary.btn-block.mt-2(href="/login") Login
+              a.btn.btn-secondary.btn-block.mt-2(href="/register") Register
+        if (user)
+          .card.shadow.mb-3
+            .card-body
+              p.text-success You are currently logged in as 
+                strong #{user.username}
+              a.btn.btn-success.btn-block.mt-2(href="/costumes") Take me to costumes
+              a.btn.btn-danger.btn-block.mt-2(href="/logout") Logout

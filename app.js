@@ -7,7 +7,26 @@ var logger = require('morgan');
 var mongoose = require('mongoose');
 const Costume = require('./models/costume'); // Import the Costume model
 const resourceRouter = require('./routes/resource'); // Import resource router
-
+var passport = require('passport');
+var LocalStrategy = require('passport-local').Strategy;
+passport.use(new LocalStrategy(
+  function(username, password, done) {
+  Account.findOne({ username: username })
+  .then(function (user){
+  if (err) { return done(err); }
+  if (!user) {
+  return done(null, false, { message: 'Incorrect username.' });
+  }
+  if (!user.validPassword(password)) {
+  return done(null, false, { message: 'Incorrect password.' });
+  }
+  return done(null, user);
+  })
+  .catch(function(err){
+  return done(err)
+  })
+  })
+  )
 // MongoDB connection string from environment variables
 const connectionString = process.env.MONGO_CON;
 
@@ -50,6 +69,13 @@ app.set('view engine', 'pug');
 // Middleware setup
 app.use(logger('dev'));
 app.use(cookieParser());
+app.use(require('express-session')({
+  secret: 'keyboard cat',
+  resave: false,
+  saveUninitialized: false
+  }));
+  app.use(passport.initialize());
+  app.use(passport.session());  
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.urlencoded({ extended: true })); // To parse form data
 app.use(express.json()); 
@@ -138,6 +164,21 @@ app.post('/resource/costumes', (req, res) => {
       res.status(500).json({ error: 'Failed to create costume' }); // Return error message as JSON
     });
 });
+app.get('/login', function(req, res) {
+  res.render('login', { title: 'Costume App Login', user : req.user });
+  });
+app.post('/login', passport.authenticate('local'), function(req, res) {
+  res.redirect('/');
+  });
+app.get('/logout', function(req, res) {
+  req.logout(function(err) {
+  if (err) { return next(err); }
+  res.redirect('/');
+  });
+  });
+app.get('/ping', function(req, res){
+  res.status(200).send("pong!");
+  });
 app.put('/costumes/:id', async (req, res) => {
   console.log("Received request to update costume ID:", req.params.id); // Debug log
   try {
@@ -157,6 +198,10 @@ app.put('/costumes/:id', async (req, res) => {
       res.status(500).send({ error: `Error : ${error.message}` });
   }
 });
+var Account =require('./models/account');
+passport.use(new LocalStrategy(Account.authenticate()));
+passport.serializeUser(Account.serializeUser());
+passport.deserializeUser(Account.deserializeUser());
 // Error handler
 app.use((err, req, res, next) => {
   console.error(err.stack);
