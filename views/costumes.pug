@@ -5,27 +5,29 @@ html
     link(rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css")
     style.
       body {
-        background-color: #f8f9fa;
+        background-color: #f4f7f6;
         font-family: 'Arial', sans-serif;
         padding: 20px;
       }
       .container {
-        max-width: 900px;
+        max-width: 1000px;
         margin: auto;
       }
       .header {
         text-align: center;
         margin-bottom: 40px;
+        padding: 20px;
       }
       .header h1 {
-        font-size: 2.5rem;
+        font-size: 2.8rem;
         color: #343a40;
-        font-weight: bold;
+        font-weight: 600;
         margin-bottom: 15px;
       }
       .header p {
-        font-size: 1.2rem;
+        font-size: 1.3rem;
         color: #6c757d;
+        margin-bottom: 20px;
       }
       .costume-card {
         border: none;
@@ -33,36 +35,58 @@ html
         padding: 20px;
         background-color: #fff;
         margin-bottom: 20px;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-        transition: transform 0.2s, box-shadow 0.2s;
+        box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
       }
       .costume-card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        transform: translateY(-10px);
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
       }
       .costume-card h5 {
-        font-size: 1.5rem;
+        font-size: 1.8rem;
         color: #007bff;
-        margin-bottom: 12px;
+        margin-bottom: 15px;
         font-weight: bold;
       }
       .costume-card p {
-        font-size: 1rem;
+        font-size: 1.1rem;
         margin-bottom: 10px;
         color: #495057;
       }
-      .btn-update {
+      .btn-action {
+        background-color: #007bff;
+        color: #fff;
+        border: none;
+        padding: 12px 25px;
+        border-radius: 8px;
+        font-size: 1.1rem;
+        text-align: center;
+        margin-top: 12px;
+        transition: background-color 0.3s, transform 0.2s;
+      }
+      .btn-action:hover {
+        background-color: #0056b3;
+        transform: scale(1.05);
+      }
+      .btn-create {
         background-color: #28a745;
         color: #fff;
         border: none;
-        padding: 10px 20px;
+        padding: 15px 30px;
         border-radius: 8px;
-        font-size: 1rem;
+        font-size: 1.4rem;
         text-align: center;
-        transition: background-color 0.3s;
+        width: 100%;
+        transition: background-color 0.3s ease;
+        margin-bottom: 30px;
       }
-      .btn-update:hover {
+      .btn-create:hover {
         background-color: #218838;
+      }
+      .row {
+        display: flex;
+        justify-content: space-between;
+        flex-wrap: wrap;
       }
 
   body
@@ -70,6 +94,11 @@ html
       div.header
         h1 Costumes Collection
         p Browse through our latest costume collection!
+        
+      // Button to go to the create page
+      button.btn-create(
+        onclick=`window.location.href = '/create';`
+      ) Add New Costume
 
       div.row
         each costume in costumes
@@ -78,11 +107,21 @@ html
               h5 #{costume.costume_type}
               p Size: #{costume.size}
               p Cost: $#{costume.cost}
-              button.btn-update(
-                onclick=`dispatch('/update?id=${costume._id}')`
+              // Update Button
+              button.btn-action(
+                onclick=`window.location.href = '/update?id=${costume._id}';`
               ) Update
+              // Detail Button
+              button.btn-action(
+                onclick=`window.location.href = '/costumes/detail?id=${costume._id}';`
+              ) Details
+              // Delete Button
+              button.btn-action(
+                onclick=`window.location.href = '/delete?id=${costume._id}';`
+              ) Delete
 
     script.
+      // JavaScript function for navigation
       function dispatch(path) {
         window.location.href = path;
       }

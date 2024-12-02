@@ -29,7 +29,12 @@ passport.use(new LocalStrategy(
   )
 // MongoDB connection string from environment variables
 const connectionString = process.env.MONGO_CON;
-
+const secured = (req, res, next) => {
+  if (req.user){
+  return next();
+  }
+  res.redirect("/login");
+  }
 // Connect to MongoDB
 mongoose.connect(connectionString, { useNewUrlParser: true, useUnifiedTopology: true })
   .then(() => console.log("Successfully connected to MongoDB"))
@@ -94,10 +99,10 @@ app.get('/costumes', async (req, res, next) => {
     next(error); // Pass errors to the error handler
   }
 });
-app.get('/create', (req, res) => {
+app.get('/create',secured, (req, res) => {
   res.render('costumecreate', { title: 'Create Costume' });
 });
-app.get('/update',async function(req, res) {
+app.get('/update',secured,async function(req, res) {
   console.log("update view for item " + req.query.id);
   try {
     let result = await Costume.findById(req.query.id);
@@ -112,7 +117,7 @@ app.get('/update',async function(req, res) {
     res.status(500).send(`{'error': '${err}'}`);
   }
 });
-app.get('/delete',  async function(req, res) {
+app.get('/delete',secured, async function(req, res) {
   console.log("Delete view for id " + req.query.id)
   try{
   result = await Costume.findById(req.query.id)

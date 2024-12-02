@@ -5,6 +5,12 @@ var costumeController = require('../controllers/costume');
 const Costume = require('../models/costume');  // Import the Costume model
 var mongoose = require('mongoose'); 
 var passport = require('passport');
+const secured = (req, res, next) => {
+  if (req.user){
+  return next();
+  }
+  res.redirect("/login");
+  }
 /// API ROUTE ///
 // GET resources base.
 router.get('/', api_controller.api);
@@ -38,7 +44,7 @@ router.put('/costumes/:id', async (req, res) => {
       res.status(500).send({ error: `Error : ${error.message}` });
   }
 });
-router.get('/update/:id', async function(req, res) {
+router.get('/update/:id',secured, async function(req, res) {
   console.log("update view for item "+req.query.id)
   try{
   let result = await Costume.findById(req.query.id)
